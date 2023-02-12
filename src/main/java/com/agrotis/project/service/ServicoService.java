@@ -1,5 +1,6 @@
 package com.agrotis.project.service;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -74,5 +75,18 @@ public class ServicoService {
 		model.setPropriedade(propriedadeModel);
 		return model;
 	}
+	
+//	##################################################
+//					Valida Vinculos	
+//	##################################################
+	
+	public Boolean validVinculoLaboratorio (BigInteger idLab) {
+		return servicoRepository.existsLaboratorio(idLab);
+	}
+	
+	public Boolean validVinculoPropriedade (BigInteger idProp) {
+		return servicoRepository.existsPropriedade(idProp);
+	}
+	
 	
 }
