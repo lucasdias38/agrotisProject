@@ -15,6 +15,7 @@ import com.agrotis.project.dto.ServicoDTO;
 import com.agrotis.project.dto.ServicoDTOPost;
 import com.agrotis.project.model.PropriedadeModel;
 import com.agrotis.project.model.ServicoModel;
+import com.agrotis.project.repository.PropriedadeRepository;
 import com.agrotis.project.repository.ServicoRepository;
 
 @Service
@@ -24,7 +25,7 @@ public class ServicoService {
 	private ServicoRepository servicoRepository;
 	
 	@Autowired
-	private PropriedadeService propriedadeService;  
+	private PropriedadeRepository propriedadeRepository;  
 	
 	public List<ServicoDTO> findAll(){
 		return ServicoDTO.ofList(servicoRepository.findAll());
@@ -68,7 +69,8 @@ public class ServicoService {
 	
 	private ServicoModel setaDados (ServicoDTOPost dtoPost) {
 		ServicoModel model = new ServicoModel();
-		PropriedadeModel propriedadeModel = propriedadeService.findByModel(dtoPost.getInfosPropriedade().getId());
+		PropriedadeModel propriedadeModel = propriedadeRepository.findById(dtoPost.getInfosPropriedade().getId())
+				.orElseThrow(() -> new AGROTISException("Propriedade não foi encontrada!")) ;
 		
 		if(!dtoPost.getCnpj().equals(propriedadeModel.getCnpj())) throw new AGROTISException("Inconsistência ao validar o CNPJ na base!");
 		BeanUtils.copyProperties(dtoPost, model);

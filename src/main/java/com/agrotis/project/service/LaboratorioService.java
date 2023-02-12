@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 import com.agrotis.project.config.exception.AGROTISException;
 import com.agrotis.project.dto.LaboratorioDTO;
@@ -46,7 +47,7 @@ public class LaboratorioService {
 		if(laboratorioRepository.existsNome(dtoPost.getNome(), id)) throw new AGROTISException("Nome do laboratório informado existe na base!");
 		
 		LaboratorioModel model = findByModel(id); 
-		model.setNome(dtoPost.getNome());
+		model.setNome(isEmpty(dtoPost.getNome())	?	model.getNome()		:	dtoPost.getNome());
 		
 		laboratorioRepository.save(model);
 		return LaboratorioDTO.of(model);
