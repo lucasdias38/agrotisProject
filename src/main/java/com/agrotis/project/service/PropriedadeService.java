@@ -23,7 +23,7 @@ public class PropriedadeService {
 	
 	public PropriedadeDTO create(PropriedadeDTOPost dtoPost){
 		if(!validaCaractere(dtoPost.getCnpj())) throw new AGROTISException("CNPJ não está no formato correto! Segue modelo: 'XX.XXX.XXX/XXXX-XX'");
-		if(propriedadeRepository.existsCnpj(dtoPost.getNome())) throw new AGROTISException("CNPJ informado existe na base!");
+		if(propriedadeRepository.existsCnpj(dtoPost.getCnpj())) throw new AGROTISException("CNPJ informado existe na base!");
 		
 		PropriedadeModel model = PropriedadeModel.ofPost(dtoPost);
 		propriedadeRepository.save(model);
@@ -35,10 +35,11 @@ public class PropriedadeService {
 	private Boolean validaCaractere (String cnpj) {
 		if(cnpj.length() != 18)
 			return false;
-		else if(!cnpj.substring(2).equals(".") || !cnpj.substring(6).equals("."))
+		else if(cnpj.charAt(2) 	!= '.' || cnpj.charAt(6)  != '.')
 			return false;
-		else if(!cnpj.substring(10).equals("/") || !cnpj.substring(15).equals("-"))
+		else if(cnpj.charAt(10) != '/' || cnpj.charAt(15) != '-')
 			return false;
+		
 		return true;
 	}
 	

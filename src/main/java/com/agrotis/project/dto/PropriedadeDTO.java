@@ -18,7 +18,7 @@ public class PropriedadeDTO {
 
 	private BigInteger id;
 	private String nome;
-	private String email;
+	private String cnpj;
 
 	public static PropriedadeDTO of (com.agrotis.project.model.PropriedadeModel entity) {
         var dto = new PropriedadeDTO();
