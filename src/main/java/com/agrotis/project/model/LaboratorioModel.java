@@ -10,6 +10,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.beans.BeanUtils;
+
+import com.agrotis.project.dto.LaboratorioDTOPost;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,4 +35,10 @@ public class LaboratorioModel {
 	@Column(name = "NOME") 
 	private String nome;
 	
+	
+	public static LaboratorioModel ofPost (LaboratorioDTOPost dto) {
+        var model = new LaboratorioModel();
+        BeanUtils.copyProperties(dto, model);
+        return model;
+    }
 }

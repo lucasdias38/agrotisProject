@@ -10,8 +10,8 @@ import com.agrotis.project.model.PropriedadeModel;
 
 public interface PropriedadeRepository extends JpaRepository<PropriedadeModel, BigInteger>{
 
-	@Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END "
-			+ "FROM PropriedadeModel e  WHERE 	e.cnpj = :cnpj ")
+	@Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END "
+			+ "FROM PropriedadeModel p  WHERE 	p.cnpj = :cnpj ")
 	boolean existsCnpj(@Param("cnpj") String cnpj);
 	
 }
