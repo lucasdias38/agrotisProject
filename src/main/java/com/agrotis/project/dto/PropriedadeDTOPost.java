@@ -8,7 +8,6 @@ public class PropriedadeDTOPost {
 	private String nome;
 	private String cnpj;
 
-	
 	public void setCnpj(String cnpj) {
 		this.cnpj = cnpj.trim();
 	}

@@ -1,5 +1,6 @@
 package com.agrotis.project.service;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,11 @@ public class PropriedadeService {
 	@Autowired
 	private PropriedadeRepository propriedadeRepository;
 	
+	public PropriedadeModel findByModel(BigInteger id){
+		PropriedadeModel model = propriedadeRepository.findById(id).orElseThrow(() -> new AGROTISException("Propriedade não foi encontrada!")) ;
+		return model;
+	}
+	
 	public List<PropriedadeDTO> findAll(){
 		return PropriedadeDTO.ofList(propriedadeRepository.findAll());
 	}
@@ -30,16 +36,14 @@ public class PropriedadeService {
 		return PropriedadeDTO.of(model);
 	}
 
-
-
 	private Boolean validaCaractere (String cnpj) {
-		if(cnpj.length() != 18)
+		if(			cnpj.length() 	!= 18
+				||	cnpj.charAt(2) 	!= '.' 
+				|| 	cnpj.charAt(6)  != '.'
+				||	cnpj.charAt(10) != '/' 
+				|| 	cnpj.charAt(15) != '-'		) {
 			return false;
-		else if(cnpj.charAt(2) 	!= '.' || cnpj.charAt(6)  != '.')
-			return false;
-		else if(cnpj.charAt(10) != '/' || cnpj.charAt(15) != '-')
-			return false;
-		
+		}
 		return true;
 	}
 	
