@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import com.agrotis.project.config.exception.AGROTISException;
 import com.agrotis.project.dto.ServicoDTO;
 import com.agrotis.project.dto.ServicoDTOPost;
+import com.agrotis.project.model.LaboratorioModel;
 import com.agrotis.project.model.PropriedadeModel;
 import com.agrotis.project.model.ServicoModel;
+import com.agrotis.project.repository.LaboratorioRepository;
 import com.agrotis.project.repository.PropriedadeRepository;
 import com.agrotis.project.repository.ServicoRepository;
 
@@ -26,6 +28,18 @@ public class ServicoService {
 	
 	@Autowired
 	private PropriedadeRepository propriedadeRepository;  
+	
+	@Autowired
+	private LaboratorioRepository laboratorioRepository;
+	
+	public ServicoDTO findByDto(BigInteger id){
+		return ServicoDTO.of(findByModel(id));
+	}
+	
+	public ServicoModel findByModel(BigInteger id){
+		ServicoModel model = servicoRepository.findById(id).orElseThrow(() -> new AGROTISException("Servico não foi encontrado!"));
+		return model;
+	}
 	
 	public List<ServicoDTO> findAll(){
 		return ServicoDTO.ofList(servicoRepository.findAll());
@@ -43,6 +57,28 @@ public class ServicoService {
 		servicoRepository.save(model);
 		return ServicoDTO.of(model);
 	}
+	
+	public ServicoDTO update(BigInteger id, ServicoDTOPost dtoPost){
+		Date dataHoje = new Date();
+		findByModel(id);
+		
+		if(validaCampos(dtoPost)) throw new AGROTISException("Preencha os campos obrigatórios!");
+		if(validaData(dtoPost.getDataInicial(), dataHoje)) throw new AGROTISException("Data Inicial tem que ser maior do que hoje!");
+		if(validaData(dtoPost.getDataFinal(), dtoPost.getDataInicial())) throw new AGROTISException("Data Final tem que ser maior do que Data Inicial!");
+		
+		ServicoModel model = setaDados(dtoPost);
+		model.setId(id);
+		servicoRepository.save(model);
+		return ServicoDTO.of(model);
+	}
+	
+	public String delete(BigInteger id) {
+		findByModel(id);
+		servicoRepository.deleteById(id);
+		return "SUCESSO";
+	}
+	
+	
 
 	private Boolean validaCampos (ServicoDTOPost dtoPost) {
 		if(	   	   isEmpty(dtoPost.getNome())
@@ -72,9 +108,13 @@ public class ServicoService {
 		PropriedadeModel propriedadeModel = propriedadeRepository.findById(dtoPost.getInfosPropriedade().getId())
 				.orElseThrow(() -> new AGROTISException("Propriedade não foi encontrada!")) ;
 		
+		LaboratorioModel laboratorio = laboratorioRepository.findById(dtoPost.getLaboratorio().getId())
+				.orElseThrow(() -> new AGROTISException("Laboratorio não foi encontrado!"));
+
 		if(!dtoPost.getCnpj().equals(propriedadeModel.getCnpj())) throw new AGROTISException("Inconsistência ao validar o CNPJ na base!");
 		BeanUtils.copyProperties(dtoPost, model);
 		model.setPropriedade(propriedadeModel);
+		model.setLaboratorio(laboratorio);
 		return model;
 	}
 	
